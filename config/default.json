@@ -1,0 +1,4 @@
+{
+    "mongoURI": "mongodb+srv://mernUser:mernUser@123@cluster0.j0rin.gcp.mongodb.net/<dbname>?retryWrites=true&w=majority",
+    "jwtSecret": "mechlin_123"
+}
