@@ -28,7 +28,8 @@ router.route('/').post((req, res) => {
                             token,
                             admin: {
                                 id: admin.id,
-                                username: admin.username
+                                username: admin.username,
+                                gender: admin.gender
                             }
                         })
                     }
@@ -38,9 +39,9 @@ router.route('/').post((req, res) => {
 });
 
 router.route('/add').post((req, res) => {
-    const {username, password} = req.body;
+    const {username, gender, password} = req.body;
 
-    if(!username || !password) return res.status(400).json({msg: 'Please enter all fields'});
+    if(!username || !gender || !password) return res.status(400).json({msg: 'Please enter all fields'});
 
     Admin.findOne({username: username})
         .then(admin => {
@@ -49,6 +50,7 @@ router.route('/add').post((req, res) => {
 
     const newAdmin = new Admin({
         username, 
+        gender,
         password
     })
 

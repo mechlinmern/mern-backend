@@ -13,6 +13,11 @@ const userSchema = new Schema({
         unique: true,
         trim: true
     },
+    gender: {
+        type: String,
+        required: true,
+        trim: true
+    },
     contact: {
         type: Number,
         required: true,

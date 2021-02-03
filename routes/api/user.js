@@ -11,9 +11,9 @@ router.route('/').get((req, res) => {
 });
 
 router.route('/add').post((req, res) => {
-    const {name, email, contact, profile, experience, duration} = req.body;
+    const {name, email, gender, contact, profile, experience, duration} = req.body;
 
-    if(!name || !email || !contact || !profile || !experience || !duration) return res.json({
+    if(!name || !email || !gender || !contact || !profile || !experience || !duration) return res.json({
         msg: 'Please enter all fields'
     });
 
@@ -25,10 +25,12 @@ router.route('/add').post((req, res) => {
         .then(user => {
             if(user) return res.json({msg: 'User already exists'});
         })
+        .catch(err => res.json(err));
 
     const newUser = new User({
         name,
         email,
+        gender,
         contact: parseInt(contact),
         profile,
         experience,
@@ -48,12 +50,13 @@ router.route('/add').post((req, res) => {
 });
 
 router.route('/update/:id').post((req, res) => {
-    const {name, email, contact, profile, experience, duration} = req.body;
+    const {name, email, gender, contact, profile, experience, duration} = req.body;
 
     User.findById(req.params.id)
         .then(user => {
             user.name = name,
             user.email = email,
+            user.gender = gender,
             user.contact = contact,
             user.profile = profile,
             user.experience = experience,
@@ -86,6 +89,7 @@ router.route('/sendquiz/:id').post( async (req, res) => {
             {
                 user.name = user.name,
                 user.email = user.email,
+                user.gender = user.gender,
                 user.contact = user.contact,
                 user.profile = user.profile,
                 user.experience = user.experience,
@@ -108,7 +112,7 @@ router.route('/sendquiz/:id').post( async (req, res) => {
                 from: `"${name}" <hr@mechlintech.com>`, // sender address
                 to: `${user.email}`, // list of receivers
                 subject: "Online quiz credentials", // Subject line
-                text: "Hello world", // plain text body
+                text: "http://localhost:3000/user_login", // plain text body
             }
                 
             // send mail with defined transport object
@@ -129,16 +133,16 @@ router.route('/sendquiz/:id').post( async (req, res) => {
     }
 });
 
-router.route('/find').get(async (req, res) => {
-    const {name} = req.body
-    
+router.route('/find').post(async (req, res) => {
     try {
-        const users = await User.findOne({name: name})
-        res.json(users)
-    } catch (error) {
-        res.json(error)
+        const {name} = req.body;
+        let regx = new RegExp(name, 'i');
+        let users = await User.find({name: regx});
+        res.json(users);
+    } catch (err) {
+        res.json(err);
     }
-});
+})
 
 router.route('/delete/:id').delete((req, res) => {
     User.findByIdAndRemove({_id: req.params.id})

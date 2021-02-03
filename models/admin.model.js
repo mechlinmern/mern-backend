@@ -8,6 +8,12 @@ const adminSchema = new Schema({
         unique: true,
         trim: true
     },
+    gender: {
+        type: String,
+        required: true,
+        unique: true,
+        trim: true
+    },
     password: {
         type: String,
         required: true,
