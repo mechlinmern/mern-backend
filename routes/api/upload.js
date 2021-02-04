@@ -1,29 +1,23 @@
-const express = require('express');
 const router = require('express').Router();
-const fileUpload = require('express-fileupload');
 const csvtojson = require('csvtojson');
 const Quiz = require('../../models/quiz.model');
-const app = express();
-
-app.use(fileUpload());
 
 router.route('/').post((req, res) => {
-    if(req.files === null) return res.json({msg: 'No file uploaded'});
-
     const file = req.files.file;
 
     file.mv(`${__dirname}/uploads/csvs/${file.name}`, err => {
         if(err) return res.json(err);
+        res.json({fileName: file.name, filePath: `${__dirname}/uploads/${file.name}`});
     });
 
-    const csvfilePath = `uploads/csvs/${file.name}`;
+    const csvfilePath = `${__dirname}/uploads/csvs/${file.name}`;
 
     csvtojson()
         .fromFile(csvfilePath)
         .then(jsonData => {
             if(jsonData) {
                 let i = 0;
-                while(i < jsonData.length()) {
+                while(i < jsonData.length) {
                     const newQuestion = new Quiz({
                         question: jsonData[i].question,
                         a: jsonData[i].a,
@@ -34,11 +28,11 @@ router.route('/').post((req, res) => {
                     });
 
                     newQuestion.save()
-                        .then(() => {
-                            res.json({msg: `Question ${i} added successfully`});
-                            i++;
+                        .then(res => {
+                            console.log(res);
                         })
-                        .catch(err => res.json(err))
+                        .catch(err => console.log(err))
+                    i++;
                 }
             }  
         })

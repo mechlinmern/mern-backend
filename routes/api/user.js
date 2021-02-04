@@ -94,8 +94,8 @@ router.route('/sendquiz/:id').post( async (req, res) => {
                 user.profile = user.profile,
                 user.experience = user.experience,
                 user.duration = user.duration,
-                user.password = null,
-                user.status = null
+                user.password = password,
+                user.status = 'Quiz Sent'
             }
 
             let transporter = nodemailer.createTransport({

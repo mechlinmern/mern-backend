@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const config = require('config');
+const fileUpload = require('express-fileupload');
 
 require('dotenv').config();
 
@@ -15,6 +16,7 @@ mongoose.connect(uri, {useNewUrlParser: true, useCreateIndex: true, useUnifiedTo
 
 app.use(cors());
 app.use(express.json());
+app.use(fileUpload());
 
 const adminRouter = require('./routes/api/admin');
 const usersRouter = require('./routes/api/user');
